@@ -1,0 +1,5 @@
+# Figuras generadas al ejecutar el notebook
+datos/*.png
+# Checkpoints de Jupyter
+.ipynb_checkpoints/
+__pycache__/
