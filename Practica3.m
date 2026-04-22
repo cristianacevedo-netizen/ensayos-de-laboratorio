@@ -66,6 +66,7 @@ uCM2x_seq = [];   uCM2y_seq = [];
 aCM1x_seq = [];   aCM1y_seq = [];
 aCM2x_seq = [];   aCM2y_seq = [];
 Fbx_seq   = [];   Fby_seq   = [];
+F2x_seq   = [];   F2y_seq   = [];
 limites   = [];
 
 t_offset  = 0;
@@ -130,13 +131,13 @@ for k = 1:nSim
 
     %% --- DESPLAZAMIENTOS CM NIVEL 1 (respecto a base) ---
     theta1 = (lvdt2 - lvdt1) ./ (uy12 - uy22);
-    uCM1x  = lvdt1 + theta1 .* uy12;
-    uCM1y  = lvdt4 - theta1 .* ux42;
+uCM1x  = lvdt1 + theta1 .* uy12;
+uCM1y  = lvdt4 - theta1 .* ux42;
 
     %% --- DESPLAZAMIENTOS CM NIVEL 2 (respecto al suelo) ---
     u1_5 = uCM1x - theta1 .* (uy5g2 - CM1y);
-    u1_6 = uCM1x - theta1 .* (uy6g2 - CM1y);
-    v1_8 = uCM1y + theta1 .* (ux8g2 - CM1x);
+u1_6 = uCM1x - theta1 .* (uy6g2 - CM1y);
+v1_8 = uCM1y + theta1 .* (ux8g2 - CM1x);
 
     u5 = u1_5 + lvdt5;
 u6 = u1_6 + lvdt6;
@@ -147,22 +148,16 @@ uCM2x  = u5 + theta2 .* uy52;
 uCM2y  = v8 - theta2 .* ux82;
 
     %% --- ACELERACIONES CM NIVEL 1 (solido rigido con 3 piezos) ---
-    % theta_acc1: rotacion del nivel 1, determinada con Piez1 y Piez2 (miden X)
-theta_acc1 = (piez2 - piez1) ./ (yP1_1 - yP2_1);
-    % Traslacion CM en X
-    aCM1x = piez1 + theta_acc1 .* yP1_1;
-    % Traslacion CM en Y: Piez4 mide Y, mismo theta_acc1
+    theta_acc1 = (piez2 - piez1) ./ (yP1_1 - yP2_1);
+aCM1x = piez1 + theta_acc1 .* yP1_1;
 aCM1y = piez4 - theta_acc1 .* xP4_1;
 
     %% --- ACELERACIONES CM NIVEL 2 (solido rigido con 3 piezos) ---
-    % theta_acc2: rotacion del nivel 2, determinada con Piez5 y Piez6 (miden X)
-theta_acc2 = (piez6 - piez5) ./ (yP5_2 - yP6_2);
-    % Traslacion CM en X
+    theta_acc2 = (piez6 - piez5) ./ (yP5_2 - yP6_2);
 aCM2x = piez5 + theta_acc2 .* yP5_2;
-    % Traslacion CM en Y: Piez8 mide Y, mismo theta_acc2
 aCM2y = piez8 - theta_acc2 .* xP8_2;
 
-    %% --- FUERZAS DE INERCIA Y RESULTANTE EN BASE ---
+    %% --- FUERZAS DE INERCIA ---
     F1x = -m1 .* aCM1x;
     F1y = -m1 .* aCM1y;
     F2x = -m2 .* aCM2x;
@@ -172,7 +167,7 @@ aCM2y = piez8 - theta_acc2 .* xP8_2;
     Fby = F1y + F2y;
 
     %% --- TIEMPO SECUENCIAL ---
-    dt_gap   = mean(diff(t));
+dt_gap   = mean(diff(t));
 t_local  = t - t(1) + t_offset;
 t_offset = t_local(end) + dt_gap;
 
@@ -188,6 +183,8 @@ aCM2x_seq = [aCM2x_seq; aCM2x];
 aCM2y_seq = [aCM2y_seq; aCM2y];
 Fbx_seq   = [Fbx_seq;   Fbx];
 Fby_seq   = [Fby_seq;   Fby];
+F2x_seq   = [F2x_seq;   F2x];
+F2y_seq   = [F2y_seq;   F2y];
 limites   = [limites, numel(t_seq)];
 
     %% --- DETECCION DE MAXIMOS SECUENCIALES ---
@@ -317,6 +314,26 @@ end
 ylabel(ax5,'F_{base,x} (kN)'); title(ax5,'Resultante fuerzas de inercia en base - X'); legend(ax5,'Location','best');
 ylabel(ax6,'F_{base,y} (kN)'); title(ax6,'Resultante fuerzas de inercia en base - Y'); legend(ax6,'Location','best');
 xlabel(ax6,'Tiempo secuencial (s)');
+
+%% GRAFICO 6 - Histeresis: F2 vs uCM2 (respecto a la base)
+%  Eje X: desplazamiento CM nivel 2 respecto a la base [mm]
+%  Eje Y: fuerza de inercia del nivel 2 F2 = -m2*aCM2 [kN]
+figure('Name','Histeresis Nivel 2','NumberTitle','off');
+ax7 = subplot(1,2,1); hold on; grid on;
+ax8 = subplot(1,2,2); hold on; grid on;
+ini = 1;
+for k = 1:nSim
+    idx = ini:limites(k);
+    plot(ax7, uCM2x_seq(idx)*1000, F2x_seq(idx), 'Color', colores(k,:), 'DisplayName', etiquetas{k});
+    plot(ax8, uCM2y_seq(idx)*1000, F2y_seq(idx), 'Color', colores(k,:), 'DisplayName', etiquetas{k});
+    ini = limites(k)+1;
+end
+xlabel(ax7,'u_{CM2,x} (mm)'); ylabel(ax7,'F_{2,x} (kN)');
+title(ax7,'Histeresis X — Nivel 2 (u_{CM2} respecto a base)');
+legend(ax7,'Location','best');
+xlabel(ax8,'u_{CM2,y} (mm)'); ylabel(ax8,'F_{2,y} (kN)');
+title(ax8,'Histeresis Y — Nivel 2 (u_{CM2} respecto a base)');
+legend(ax8,'Location','best');
 
 %% ========================================================
 %  IMPRESION DE PUNTOS DE MAXIMO DESPLAZAMIENTO
