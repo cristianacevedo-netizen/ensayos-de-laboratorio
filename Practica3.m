@@ -472,3 +472,33 @@ end
 ylabel(ax5b,'F_{base,x} (kN)'); title(ax5b,'[A2] Resultante fuerzas de inercia en base - X'); legend(ax5b,'Location','best');
 ylabel(ax6b,'F_{base,y} (kN)'); title(ax6b,'[A2] Resultante fuerzas de inercia en base - Y'); legend(ax6b,'Location','best');
 xlabel(ax6b,'Tiempo secuencial (s)');
+
+%% GRAFICO 11 - Fuerza vs Desplazamiento Nivel 2 (todos los ensayos)
+figure('Name','Fuerza vs Desplazamiento - Nivel 2','NumberTitle','off');
+ax7 = subplot(2,1,1); hold on; grid on;
+ax8 = subplot(2,1,2); hold on; grid on;
+for k = 1:nSim
+    ini_k = 1; if k > 1, ini_k = limites(k-1)+1; end
+    idx_k = ini_k:limites(k);
+    plot(ax7, uCM2x_seq(idx_k)*1000, Fbx_seq(idx_k), 'Color', colores(k,:), 'DisplayName', etiquetas{k});
+    plot(ax8, uCM2y_seq(idx_k)*1000, Fby_seq(idx_k), 'Color', colores(k,:), 'DisplayName', etiquetas{k});
+end
+xlabel(ax7,'u_{CM2,x} (mm)'); ylabel(ax7,'F_{base,x} (kN)');
+title(ax7,'Fuerza vs Desplazamiento Nivel 2 - X'); legend(ax7,'Location','best');
+xlabel(ax8,'u_{CM2,y} (mm)'); ylabel(ax8,'F_{base,y} (kN)');
+title(ax8,'Fuerza vs Desplazamiento Nivel 2 - Y'); legend(ax8,'Location','best');
+
+%% GRAFICO 12 - [A2] Fuerza vs Desplazamiento Nivel 2 (sin Calitri200 ni Calitri300)
+figure('Name','[A2] Fuerza vs Desplazamiento - Nivel 2','NumberTitle','off');
+ax9 = subplot(2,1,1); hold on; grid on;
+ax10 = subplot(2,1,2); hold on; grid on;
+for k = idx_A2
+    ini_k = 1; if k > 1, ini_k = limites(k-1)+1; end
+    idx_k = ini_k:limites(k);
+    plot(ax9, uCM2x_seq(idx_k)*1000, Fbx_seq(idx_k), 'Color', colores(k,:), 'DisplayName', etiquetas{k});
+    plot(ax10, uCM2y_seq(idx_k)*1000, Fby_seq(idx_k), 'Color', colores(k,:), 'DisplayName', etiquetas{k});
+end
+xlabel(ax9,'u_{CM2,x} (mm)'); ylabel(ax9,'F_{base,x} (kN)');
+title(ax9,'[A2] Fuerza vs Desplazamiento Nivel 2 - X'); legend(ax9,'Location','best');
+xlabel(ax10,'u_{CM2,y} (mm)'); ylabel(ax10,'F_{base,y} (kN)');
+title(ax10,'[A2] Fuerza vs Desplazamiento Nivel 2 - Y'); legend(ax10,'Location','best');
