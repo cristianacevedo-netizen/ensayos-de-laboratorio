@@ -74,7 +74,7 @@ t_offset  = 0;
 maxPos_x = 0;   maxNeg_x = 0;
 maxPos_y = 0;   maxNeg_y = 0;
 
-%  Vectores de puntos maximos [t, u(mm), a(m/s^2)]
+%  Vectores de puntos maximos [t, u(mm), a(m/s^2), F_base(kN)]
 pts_x_pos = [];   pts_x_neg = [];
 pts_y_pos = [];   pts_y_neg = [];
 
@@ -197,7 +197,7 @@ limites   = [limites, numel(t_seq)];
         if pks(i) > maxPos_x
             maxPos_x = pks(i);
             gi = n_prev + locs(i);
-            pts_x_pos = [pts_x_pos; t_seq(gi), uCM2x_seq(gi)*1000, aCM2x_seq(gi)];
+            pts_x_pos = [pts_x_pos; t_seq(gi), uCM2x_seq(gi)*1000, aCM2x_seq(gi), Fbx_seq(gi)];
         end
     end
 
@@ -207,7 +207,7 @@ limites   = [limites, numel(t_seq)];
         if pks(i) > maxNeg_x
             maxNeg_x = pks(i);
             gi = n_prev + locs(i);
-            pts_x_neg = [pts_x_neg; t_seq(gi), uCM2x_seq(gi)*1000, aCM2x_seq(gi)];
+            pts_x_neg = [pts_x_neg; t_seq(gi), uCM2x_seq(gi)*1000, aCM2x_seq(gi), Fbx_seq(gi)];
         end
     end
 
@@ -217,7 +217,7 @@ limites   = [limites, numel(t_seq)];
         if pks(i) > maxPos_y
             maxPos_y = pks(i);
             gi = n_prev + locs(i);
-            pts_y_pos = [pts_y_pos; t_seq(gi), uCM2y_seq(gi)*1000, aCM2y_seq(gi)];
+            pts_y_pos = [pts_y_pos; t_seq(gi), uCM2y_seq(gi)*1000, aCM2y_seq(gi), Fby_seq(gi)];
         end
     end
 
@@ -227,7 +227,7 @@ limites   = [limites, numel(t_seq)];
         if pks(i) > maxNeg_y
             maxNeg_y = pks(i);
             gi = n_prev + locs(i);
-            pts_y_neg = [pts_y_neg; t_seq(gi), uCM2y_seq(gi)*1000, aCM2y_seq(gi)];
+            pts_y_neg = [pts_y_neg; t_seq(gi), uCM2y_seq(gi)*1000, aCM2y_seq(gi), Fby_seq(gi)];
         end
     end
 end
@@ -322,27 +322,27 @@ xlabel(ax6,'Tiempo secuencial (s)');
 %% ========================================================
 %  IMPRESION DE PUNTOS DE MAXIMO DESPLAZAMIENTO
 fprintf('\n--- Puntos de maximo desplazamiento X (positivos) ---\n');
-fprintf('  t(s)       u_CM2x(mm)   a_CM2x(m/s2)\n');
+fprintf('  t(s)       u_CM2x(mm)   a_CM2x(m/s2)   F_base(kN)\n');
 for i = 1:size(pts_x_pos,1)
-    fprintf('  %8.3f   %10.3f   %12.4f\n', pts_x_pos(i,1), pts_x_pos(i,2), pts_x_pos(i,3));
+    fprintf('  %8.3f   %10.3f   %12.4f   %10.4f\n', pts_x_pos(i,1), pts_x_pos(i,2), pts_x_pos(i,3), pts_x_pos(i,4));
 end
 
 fprintf('\n--- Puntos de maximo desplazamiento X (negativos) ---\n');
-fprintf('  t(s)       u_CM2x(mm)   a_CM2x(m/s2)\n');
+fprintf('  t(s)       u_CM2x(mm)   a_CM2x(m/s2)   F_base(kN)\n');
 for i = 1:size(pts_x_neg,1)
-    fprintf('  %8.3f   %10.3f   %12.4f\n', pts_x_neg(i,1), pts_x_neg(i,2), pts_x_neg(i,3));
+    fprintf('  %8.3f   %10.3f   %12.4f   %10.4f\n', pts_x_neg(i,1), pts_x_neg(i,2), pts_x_neg(i,3), pts_x_neg(i,4));
 end
 
 fprintf('\n--- Puntos de maximo desplazamiento Y (positivos) ---\n');
-fprintf('  t(s)       u_CM2y(mm)   a_CM2y(m/s2)\n');
+fprintf('  t(s)       u_CM2y(mm)   a_CM2y(m/s2)   F_base(kN)\n');
 for i = 1:size(pts_y_pos,1)
-    fprintf('  %8.3f   %10.3f   %12.4f\n', pts_y_pos(i,1), pts_y_pos(i,2), pts_y_pos(i,3));
+    fprintf('  %8.3f   %10.3f   %12.4f   %10.4f\n', pts_y_pos(i,1), pts_y_pos(i,2), pts_y_pos(i,3), pts_y_pos(i,4));
 end
 
 fprintf('\n--- Puntos de maximo desplazamiento Y (negativos) ---\n');
-fprintf('  t(s)       u_CM2y(mm)   a_CM2y(m/s2)\n');
+fprintf('  t(s)       u_CM2y(mm)   a_CM2y(m/s2)   F_base(kN)\n');
 for i = 1:size(pts_y_neg,1)
-    fprintf('  %8.3f   %10.3f   %12.4f\n', pts_y_neg(i,1), pts_y_neg(i,2), pts_y_neg(i,3));
+    fprintf('  %8.3f   %10.3f   %12.4f   %10.4f\n', pts_y_neg(i,1), pts_y_neg(i,2), pts_y_neg(i,3), pts_y_neg(i,4));
 end
 
 %% ========================================================
@@ -368,7 +368,7 @@ for k = idx_A2
         if pks(i) > maxPos_x2
             maxPos_x2 = pks(i);
             gi = ini_k - 1 + locs(i);
-            pts_x_pos2 = [pts_x_pos2; t_seq(gi), uCM2x_seq(gi)*1000, aCM2x_seq(gi)];
+            pts_x_pos2 = [pts_x_pos2; t_seq(gi), uCM2x_seq(gi)*1000, aCM2x_seq(gi), Fbx_seq(gi)];
         end
     end
     [pks, locs] = findpeaks(-uCM2x_k);
@@ -376,7 +376,7 @@ for k = idx_A2
         if pks(i) > maxNeg_x2
             maxNeg_x2 = pks(i);
             gi = ini_k - 1 + locs(i);
-            pts_x_neg2 = [pts_x_neg2; t_seq(gi), uCM2x_seq(gi)*1000, aCM2x_seq(gi)];
+            pts_x_neg2 = [pts_x_neg2; t_seq(gi), uCM2x_seq(gi)*1000, aCM2x_seq(gi), Fbx_seq(gi)];
         end
     end
     [pks, locs] = findpeaks(uCM2y_k);
@@ -384,7 +384,7 @@ for k = idx_A2
         if pks(i) > maxPos_y2
             maxPos_y2 = pks(i);
             gi = ini_k - 1 + locs(i);
-            pts_y_pos2 = [pts_y_pos2; t_seq(gi), uCM2y_seq(gi)*1000, aCM2y_seq(gi)];
+            pts_y_pos2 = [pts_y_pos2; t_seq(gi), uCM2y_seq(gi)*1000, aCM2y_seq(gi), Fby_seq(gi)];
         end
     end
     [pks, locs] = findpeaks(-uCM2y_k);
@@ -392,7 +392,7 @@ for k = idx_A2
         if pks(i) > maxNeg_y2
             maxNeg_y2 = pks(i);
             gi = ini_k - 1 + locs(i);
-            pts_y_neg2 = [pts_y_neg2; t_seq(gi), uCM2y_seq(gi)*1000, aCM2y_seq(gi)];
+            pts_y_neg2 = [pts_y_neg2; t_seq(gi), uCM2y_seq(gi)*1000, aCM2y_seq(gi), Fby_seq(gi)];
         end
     end
 end
@@ -483,6 +483,22 @@ for k = 1:nSim
     plot(ax7, uCM2x_seq(idx_k)*1000, Fbx_seq(idx_k), 'Color', colores(k,:), 'DisplayName', etiquetas{k});
     plot(ax8, uCM2y_seq(idx_k)*1000, Fby_seq(idx_k), 'Color', colores(k,:), 'DisplayName', etiquetas{k});
 end
+cap_x = [];
+if ~isempty(pts_x_pos), cap_x = [cap_x; pts_x_pos(:,[2,4])]; end
+if ~isempty(pts_x_neg), cap_x = [cap_x; pts_x_neg(:,[2,4])]; end
+if ~isempty(cap_x)
+    cap_x = sortrows(cap_x, 1);
+    plot(ax7, cap_x(:,1), cap_x(:,2), 'k-o', 'LineWidth', 2, 'MarkerSize', 6, ...
+         'MarkerFaceColor','k', 'DisplayName','Curva capacidad');
+end
+cap_y = [];
+if ~isempty(pts_y_pos), cap_y = [cap_y; pts_y_pos(:,[2,4])]; end
+if ~isempty(pts_y_neg), cap_y = [cap_y; pts_y_neg(:,[2,4])]; end
+if ~isempty(cap_y)
+    cap_y = sortrows(cap_y, 1);
+    plot(ax8, cap_y(:,1), cap_y(:,2), 'k-o', 'LineWidth', 2, 'MarkerSize', 6, ...
+         'MarkerFaceColor','k', 'DisplayName','Curva capacidad');
+end
 xlabel(ax7,'u_{CM2,x} (mm)'); ylabel(ax7,'F_{base,x} (kN)');
 title(ax7,'Fuerza vs Desplazamiento Nivel 2 - X'); legend(ax7,'Location','best');
 xlabel(ax8,'u_{CM2,y} (mm)'); ylabel(ax8,'F_{base,y} (kN)');
@@ -497,6 +513,22 @@ for k = idx_A2
     idx_k = ini_k:limites(k);
     plot(ax9, uCM2x_seq(idx_k)*1000, Fbx_seq(idx_k), 'Color', colores(k,:), 'DisplayName', etiquetas{k});
     plot(ax10, uCM2y_seq(idx_k)*1000, Fby_seq(idx_k), 'Color', colores(k,:), 'DisplayName', etiquetas{k});
+end
+cap_x2 = [];
+if ~isempty(pts_x_pos2), cap_x2 = [cap_x2; pts_x_pos2(:,[2,4])]; end
+if ~isempty(pts_x_neg2), cap_x2 = [cap_x2; pts_x_neg2(:,[2,4])]; end
+if ~isempty(cap_x2)
+    cap_x2 = sortrows(cap_x2, 1);
+    plot(ax9, cap_x2(:,1), cap_x2(:,2), 'k-o', 'LineWidth', 2, 'MarkerSize', 6, ...
+         'MarkerFaceColor','k', 'DisplayName','Curva capacidad');
+end
+cap_y2 = [];
+if ~isempty(pts_y_pos2), cap_y2 = [cap_y2; pts_y_pos2(:,[2,4])]; end
+if ~isempty(pts_y_neg2), cap_y2 = [cap_y2; pts_y_neg2(:,[2,4])]; end
+if ~isempty(cap_y2)
+    cap_y2 = sortrows(cap_y2, 1);
+    plot(ax10, cap_y2(:,1), cap_y2(:,2), 'k-o', 'LineWidth', 2, 'MarkerSize', 6, ...
+         'MarkerFaceColor','k', 'DisplayName','Curva capacidad');
 end
 xlabel(ax9,'u_{CM2,x} (mm)'); ylabel(ax9,'F_{base,x} (kN)');
 title(ax9,'[A2] Fuerza vs Desplazamiento Nivel 2 - X'); legend(ax9,'Location','best');
